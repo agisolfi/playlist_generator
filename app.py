@@ -110,4 +110,5 @@ def generate_playlist():
     return render_template("success.html", playlist_name=playlist_name, playlist_link=playlist_link, length=len(songs),playlist_id=playlist_id)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.getenv("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
