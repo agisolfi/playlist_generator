@@ -6,12 +6,12 @@ import ast
 import os
 
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Needed for session management
+app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
 # Spotify API configuration
 CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
-REDIRECT_URI = "https://playlist-generator-xjq7.onrender.com/callback"
+REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
 SCOPE = "playlist-modify-public playlist-modify-private"
 
 #  Authenticate OPENAI
