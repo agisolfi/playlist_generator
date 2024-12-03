@@ -11,7 +11,7 @@ app.secret_key = "your_secret_key"  # Needed for session management
 # Spotify API configuration
 CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
-REDIRECT_URI = "http://localhost:8000/callback"
+REDIRECT_URI = "https://playlist-generator-xjq7.onrender.com/callback"
 SCOPE = "playlist-modify-public playlist-modify-private"
 
 #  Authenticate OPENAI
