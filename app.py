@@ -1,31 +1,37 @@
-import spotipy
+from flask import Flask, redirect, request, session, url_for, render_template
+from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
-import os
 from openai import OpenAI
 import ast
+import os
 
-SPOTIFY_CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
-SPOTIFY_CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+app = Flask(__name__)
+app.secret_key = "your_secret_key"  # Needed for session management
 
-# Authenticate Spotipy
-sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
-    client_id=SPOTIFY_CLIENT_ID,
-    client_secret=SPOTIFY_CLIENT_SECRET,
-    redirect_uri="http://localhost:8000/callback",
-    scope="user-read-private,playlist-modify-public,playlist-modify-private"  # Use 'playlist-modify-private' for private playlists
-))
+# Spotify API configuration
+CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
+CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
+REDIRECT_URI = "http://localhost:8000/callback"
+SCOPE = "playlist-modify-public playlist-modify-private"
 
-# Get the authenticated user's Spotify ID
-user_id = sp.me()["id"]
-
-# Authenticate OPENAI
+#  Authenticate OPENAI
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
 )
-# Function to search for song url
+# Authenticate Spotipy
+auth_manager = Spotify(auth_manager=SpotifyOAuth(
+    client_id=CLIENT_ID,
+    client_secret=CLIENT_SECRET,
+    redirect_uri=REDIRECT_URI,
+    scope=SCOPE
+    ))
+
+# Get the authenticated user's Spotify ID
+user_id = auth_manager.me()["id"]
+
 def get_song_url(song_name, artist):
     query = f"{song_name} {artist}"
-    results = sp.search(q=query, type="track", limit=1)  # Search for the track
+    results = auth_manager.search(q=query, type="track", limit=1)  # Search for the track
     tracks = results.get("tracks", {}).get("items", [])
     if tracks:
         return tracks[0]['external_urls']['spotify']  # Return the track's sportify url
@@ -47,7 +53,7 @@ def build_playlist(user_request,name):
     # Create a new playlist
     playlist_name = name
     playlist_description = f"A playlist generated based on ChatGPT recommendations from the following prompt:{user_request}."
-    playlist = sp.user_playlist_create(
+    playlist = auth_manager.user_playlist_create(
         user=user_id,
         name=playlist_name,
         public=True,  # Set to False for a private playlist
@@ -57,7 +63,7 @@ def build_playlist(user_request,name):
     return playlist
 
 def add_to_playlist(playlist_id,song_urls):
-    sp.playlist_add_items(playlist_id=playlist_id,items=song_urls)
+    auth_manager.playlist_add_items(playlist_id=playlist_id,items=song_urls)
     print("songs added")
 
 def get_chatgpt_recs(user_request):
@@ -82,14 +88,26 @@ def get_chatgpt_recs(user_request):
 
 
 
-#----------------------------------------------------------------#
-if __name__=="__main__":
-    user_request=input("Enter request for playlist. Ex: 'I want you to create a playlist of music similar to the Deftones song Cherry Waves.'\n")
-    playlist_name=input("Enter the name for the playlist\n")
+@app.route("/")
+def index():
+    return render_template("index.html")  # Serve the homepage
+
+@app.route("/generate", methods=["POST"])
+def generate_playlist():
+    # Get user inputs from the form
+    user_request = request.form.get("request-input")
+    playlist_name = request.form.get("playlist-name")
 
     songs = get_chatgpt_recs(user_request)
-    playlist=build_playlist(user_request,playlist_name)
-    song_urls=build_url_list(songs)
-    add_to_playlist(playlist_id=playlist['id'],song_urls=song_urls)
-    print("Playlist Made Sucessfully")
+    playlist = build_playlist(user_request, playlist_name)
+    song_urls = build_url_list(songs)
+    add_to_playlist(playlist_id=playlist["id"], song_urls=song_urls)
 
+    # Extract playlist link
+    playlist_link = playlist["external_urls"]["spotify"]
+    playlist_id = playlist["id"]  
+
+    return render_template("success.html", playlist_name=playlist_name, playlist_link=playlist_link, length=len(songs),playlist_id=playlist_id)
+
+if __name__ == "__main__":
+    app.run(debug=True)

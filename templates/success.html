@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Playlist Created</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Playlist Created Successfully!</h1>
+    <p>Your playlist "<strong>{{ playlist_name }}</strong>" has been created with "{{length}}" songs.</p>
+    <iframe 
+        src="https://open.spotify.com/embed/playlist/{{ playlist_id }}" 
+        frameborder="0" 
+        allowtransparency="true" 
+        allow="encrypted-media">
+    </iframe>
+    <br>
+    <a href="/"><button>Create another playlist</button></a>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spotify Playlist Generator</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Welcome to the ChatGPT Playlist Generator</h1>
+    <br>
+    <h2>How To Use:</h2>
+    <p>Enter your request to ChatGPT below in the "playlist request" field.
+    You can ask ChatGPT to make you any kind of playlist such as: "I want you to create a playlist of music similar to the Deftones song Cherry Waves."</p>
+
+    <p>Treat this request as you would normally using ChatGPT in your browser.
+    Then add your playlist name in its field and then hit the generate button.</p>
+    <br>
+    <form action="/generate" method="POST">
+        <label for="request-input">Playlist Request:</label>
+        <input type="text" id="request-input" name="request-input" required>
+        <label for="playlist-name">Playlist Name:</label>
+        <input type="text" id="playlist-name" name="playlist-name" required>
+        <button type="submit">Generate Playlist</button>
+    </form>
+
+</body>
+</html>
