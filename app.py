@@ -19,12 +19,12 @@ client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
 )
 # Authenticate Spotipy
-auth_manager = Spotify(auth_manager=SpotifyOAuth(
+auth_manager = SpotifyOAuth(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     redirect_uri=REDIRECT_URI,
     scope=SCOPE
-    ))
+    )
 
 # Get the authenticated user's Spotify ID
 user_id = auth_manager.me()["id"]
