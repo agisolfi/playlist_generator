@@ -1,5 +1,5 @@
 from flask import Flask, redirect, request, session, url_for, render_template, g
-from spotipy import Spotify
+import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from openai import OpenAI
 import ast
@@ -13,20 +13,24 @@ CLIENT_ID = os.getenv("SPOTIPY_CLIENT_ID")
 CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
 SCOPE = "playlist-modify-public playlist-modify-private"
+REFRESH_TOKEN = os.getenv("SPOTIFY_REFRESH_TOKEN")
 
 #  Authenticate OPENAI
 client = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
 )
-# Authenticate Spotipy
+
 auth_manager = SpotifyOAuth(
     client_id=CLIENT_ID,
     client_secret=CLIENT_SECRET,
     redirect_uri=REDIRECT_URI,
     scope=SCOPE
-    )
+)
+auth_manager.refresh_access_token(refresh_token=REFRESH_TOKEN)
+sp=spotipy.Spotify(auth_manager=auth_manager)
 
-def get_song_url(sp,song_name, artist):
+
+def get_song_url(song_name, artist):
     query = f"{song_name} {artist}"
     results = sp.search(q=query, type="track", limit=1)  # Search for the track
     tracks = results.get("tracks", {}).get("items", [])
@@ -36,16 +40,16 @@ def get_song_url(sp,song_name, artist):
         print(f"Song '{song_name}' by '{artist}' not found.")
         return None
     
-def build_url_list(sp,song_list):
+def build_url_list(song_list):
     song_urls=[]
 
     for song in song_list:
-        url=get_song_url(sp,song["name"],song["artist"])
+        url=get_song_url(song["name"],song["artist"])
         song_urls.append(url)
     print("URLS Recieved")
     return song_urls
 
-def build_playlist(sp,user_request,name):
+def build_playlist(user_request,name):
     # Create a new playlist
     playlist_name = name
     playlist_description = f"A playlist generated based on ChatGPT recommendations from the following prompt:{user_request}."
@@ -58,7 +62,7 @@ def build_playlist(sp,user_request,name):
     print("Playlist Initialized")
     return playlist
 
-def add_to_playlist(sp,playlist_id,song_urls):
+def add_to_playlist(playlist_id,song_urls):
     sp.playlist_add_items(playlist_id=playlist_id,items=song_urls)
     print("songs added")
 
@@ -85,40 +89,19 @@ def get_chatgpt_recs(user_request):
 
 
 @app.route("/")
-def login():
-    # Redirect user to Spotify authentication
-    auth_url = auth_manager.get_authorize_url()
-    return redirect(auth_url)
-
-@app.route('/callback')
-def callback():
-    # Get the authorization code from the callback URL
-    code = request.args.get('code')
-    token_info = auth_manager.get_access_token(code)
-
-    # Save token information in the session
-    session['token_info'] = token_info
-
-    # Create Spotify object with the user's access token
-    sp = Spotify(auth=session.get('token_info')['access_token'])
-
-    # Get the user's Spotify profile and store the user ID
-    user_profile = sp.me()
-    session['user_id'] = user_profile['id']  # Store user ID in session
-
+def index():
     return render_template("index.html")
 
 @app.route("/generate", methods=["POST"])
 def generate_playlist():
-    sp = Spotify(auth=session.get('token_info')['access_token'])
     # Get user inputs from the form
     user_request = request.form.get("request-input")
     playlist_name = request.form.get("playlist-name")
 
     songs = get_chatgpt_recs(user_request)
-    playlist = build_playlist(sp, user_request, playlist_name)
-    song_urls = build_url_list(sp,songs)
-    add_to_playlist(sp=sp,playlist_id=playlist["id"], song_urls=song_urls)
+    playlist = build_playlist(user_request, playlist_name)
+    song_urls = build_url_list(songs)
+    add_to_playlist(playlist_id=playlist["id"], song_urls=song_urls)
 
     # Extract playlist link
     playlist_link = playlist["external_urls"]["spotify"]
