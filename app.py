@@ -14,6 +14,7 @@ CLIENT_SECRET = os.getenv("SPOTIPY_CLIENT_SECRET")
 REDIRECT_URI = os.getenv("SPOTIPY_REDIRECT_URI")
 SCOPE = "playlist-modify-public playlist-modify-private"
 REFRESH_TOKEN = os.getenv("SPOTIFY_REFRESH_TOKEN")
+USER_ID=os.getenv("USER_ID")
 
 #  Authenticate OPENAI
 client = OpenAI(
@@ -54,7 +55,7 @@ def build_playlist(user_request,name):
     playlist_name = name
     playlist_description = f"A playlist generated based on ChatGPT recommendations from the following prompt:{user_request}."
     playlist = sp.user_playlist_create(
-        user=session.get('user_id'),
+        user=USER_ID,
         name=playlist_name,
         public=True,  # Set to False for a private playlist
         description=playlist_description
