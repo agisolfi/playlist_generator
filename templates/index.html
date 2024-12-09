@@ -1,26 +1,203 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Spotify Playlist Generator</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-    <h1>Welcome to the ChatGPT Playlist Generator</h1>
-    <br>
-    <h2>How To Use:</h2>
-    <p>Enter your request to ChatGPT below in the "playlist request" field.
-    You can ask ChatGPT to make you any kind of playlist such as: "I want you to create a playlist of music similar to the Deftones song Cherry Waves."</p>
+<html lang="en">
 
-    <p>Treat this request as you would normally using ChatGPT in your browser.
-    Then add your playlist name in its field and then hit the generate button.</p>
-    <br>
-    <form action="/generate" method="POST">
-        <label for="request-input">Playlist Request:</label>
-        <input type="text" id="request-input" name="request-input" required>
-        <label for="playlist-name">Playlist Name:</label>
-        <input type="text" id="playlist-name" name="playlist-name" required>
-        <button type="submit">Generate Playlist</button>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Playlist Generator</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}"rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/aos/aos.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='/assets/vendor/glightbox/js/glightbox.min.js') }}" rel="stylesheet">
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+
+  <!-- =======================================================
+  * Template Name: Gp
+  * Template URL: https://bootstrapmade.com/gp-free-multipurpose-html-bootstrap-template/
+  * Updated: Aug 15 2024 with Bootstrap v5.3.3
+  * Author: BootstrapMade.com
+  * License: https://bootstrapmade.com/license/
+  ======================================================== -->
+</head>
+
+<body class="starter-page-page">
+
+  <header id="header" class="header d-flex align-items-center position-relative">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+
+      <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+        <!-- Uncomment the line below if you also wish to use an image logo -->
+        <!-- <img src="assets/img/logo.png" alt=""> -->
+        <h1 class="sitename">Playlist Generator</h1>
+        <span>.</span>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#top">About<br></a></li>
+          <li><a href="#generator">Generator</a></li>
+          <li><a href="#how-to">How To Use</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Page Title -->
+    <div id="top" class="page-title" data-aos="fade">
+      <div class="heading">
+        <div class="container">
+          <div class="row d-flex justify-content-center text-center">
+            <div class="col-lg-8">
+              <h1>ChatGPT Playlist Generator</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- End Page Title -->
+
+    <!-- About Section -->
+    <section id="how-to" class="starter-section section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>About</h2>
+        <p>About</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up">
+        <p class="mb-0">Welcome to the ChatGPT Playlist Generator! This project was created using Spotify and OpenAI API services to allow users to directly create playlists formed through ChatGPT requests.</p>      
+      </div>
+
+    </section><!-- /About Section -->
+
+    <!-- Generator Section -->
+    <section id="generator" class="starter-section section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>Generator</h2>
+        <p>Generator</p>
+      </div><!-- End Section Title -->
+      
+    <div class="container" data-aos="fade-up">
+      <form action="/generate" method="POST">
+          <label for="request-input">Playlist Request:</label>
+          <input type="text" id="request-input" name="request-input" required>
+          <label for="playlist-name">Playlist Name:</label>
+          <input type="text" id="playlist-name" name="playlist-name" required>
+          <button type="submit">Generate Playlist</button> 
     </form>
+  </div>
+    </section><!-- /Generator Section -->
+
+    <!-- HOWTO Section -->
+    <section id="how-to" class="starter-section section">
+
+      <!-- Section Title -->
+      <div class="container section-title" data-aos="fade-up">
+        <h2>How to Use</h2>
+        <p>How to Use</p>
+      </div><!-- End Section Title -->
+
+      <div class="container" data-aos="fade-up">
+        <p>Enter your request to ChatGPT above in the "playlist request" field.
+          You can ask ChatGPT to make you any kind of playlist such as: "I want you to create a playlist of music similar to the Deftones song Cherry Waves." By default, around 10 songs will be chosen but the user can specify the length of playlist in minutes/amount of songs as part of thier prompt.</p>
+      
+          <p>Then add your playlist name in its field and then hit the generate button.</p>
+          
+          <p>You will then be directed to a page with your Spotify playlist. You can click on the playlist here and be redirected to its Spotify page. All playlists are created on my account and can be saved/duplicated by the user to the user's personal account. Unfortunatley due the nature of Spotify's API, I cannot have the playlist created on the users account as it requires an API account and its respective keys to do so.</p>
+        
+          <p>For those who use Apple Music, you can download the free app SongShift on your phone and convert these playlists through the app.</p>
+      </div>
+
+    </section><!-- /HOWTO Section -->
+
+  </main>
+
+  <footer id="contact" class="footer dark-background">
+
+    <div class="footer-top">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-4 col-md-6 footer-about">
+            <a href="index.html" class="logo d-flex align-items-center">
+              <span class="sitename">Anthony Dario Gisolfi</span>
+            </a>
+          </div>
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Contacts</h4>
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <a href="https://www.linkedin.com/in/anthony-dario-gisolfi/"> LinkedIn</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="https://github.com/agisolfi"> GitHub</a></li>
+              <li><i class="bi bi-chevron-right"></i> <a href="https://www.anthonydario.gisolfi.org/"> Personal Website</a></li>
+            </ul>
+          </div>
+
+          <div class="col-lg-2 col-md-3 footer-links">
+            <h4>Experiencing an Error?</h4>
+            <ul>
+              <li><i class="bi bi-chevron-right"></i> <a href="https://github.com/agisolfi/playlist_generator/issues">Report Error</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="copyright">
+      <div class="container text-center">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">ADG</strong> <span>All Rights Reserved</span></p>
+        <div class="credits">
+          <!-- All the links in the footer should remain intact. -->
+          <!-- You can delete the links only if you've purchased the pro version. -->
+          <!-- Licensing information: https://bootstrapmade.com/license/ -->
+          <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
+        </div>
+      </div>
+    </div>
+
+  </footer>
+
+  <!-- Scroll Top -->
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Preloader -->
+  <div id="preloader"></div>
+  "{{ url_for('static', filename='assets/css/main.css') }}"
+  <!-- Vendor JS Files -->
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/aos/aos.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/glightbox/js/glightbox.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/imagesloaded/imagesloaded.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/isotope-layout/isotope.pkgd.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/purecounter/purecounter_vanilla.js') }}"></script>
+
+  <!-- Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
 
 </body>
+
 </html>
