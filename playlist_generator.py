@@ -20,7 +20,7 @@ user_id = sp.me()["id"]
 
 # Authenticate OPENAI
 client = OpenAI(
-    api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+    api_key=os.environ.get("OPENAI_API_KEY"),  
 )
 # Function to search for song url
 def get_song_url(song_name, artist):
